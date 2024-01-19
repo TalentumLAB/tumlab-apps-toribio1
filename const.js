@@ -359,7 +359,7 @@ export const apps = [
           "./assets/recursos-educativos/videos/recursos-educativos-krita.mp4",
         title: `${sectionApps["app-krita-title"]}`,
         description: `${sectionApps["app-krita-description"]}`,
-        url: "http://tumlab.local/Krita/krita-x64-5.2.2-setup.exe",
+        url: "http://tumlab.local/krita/krita-x64-5.2.2-setup.exe",
       },
     ],
   },
