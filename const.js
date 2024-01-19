@@ -166,7 +166,7 @@ export const headerMenulist = [
   {
     id: "digital-tools",
     name: `${header["header-category-digital-tools"]}`,
-    is_enable: true,
+    is_enable: false,
   },
   {
     id: "simulators",
