@@ -161,7 +161,7 @@ export const headerMenulist = [
   {
     id: "talentum-resources",
     name: `${header["header-category-talentum-resources"]}`,
-    is_enable: true,
+    is_enable: false,
   },
   {
     id: "digital-tools",
@@ -342,7 +342,7 @@ export const apps = [
       {
         id: "scratch",
         order: 4,
-        is_show: true,
+        is_show: false,
         thumbnail: "./assets/recursos-educativos/scratch_thumbnail.webp",
         video:
           "./assets/recursos-educativos/videos/recursos-educativos-scratch.mp4",
@@ -353,7 +353,7 @@ export const apps = [
       {
         id: "krita",
         order: 5,
-        is_show: true,
+        is_show: false,
         thumbnail: "./assets/recursos-educativos/krita_thumbnail.webp",
         video:
           "./assets/recursos-educativos/videos/recursos-educativos-krita.mp4",
