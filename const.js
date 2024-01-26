@@ -342,7 +342,7 @@ export const apps = [
       {
         id: "scratch",
         order: 4,
-        is_show: false,
+        is_show: true,
         thumbnail: "./assets/recursos-educativos/scratch_thumbnail.webp",
         video:
           "./assets/recursos-educativos/videos/recursos-educativos-scratch.mp4",
