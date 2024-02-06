@@ -2,11 +2,30 @@ import { textChangeLanguage } from "./locales/index.js";
 import tumlab from "./info/agent.json" assert { type: "json" };
 
 export const LANGUAGE = "language";
+export const ACTIVATION_DATE = "18/01/2024";
 export const DEFAULT_LANGUAGE = "es";
 const SUPPORT_EMAIL = "support@tumlab.com";
-const ACTIVATION_DATE = "18/01/2024";
-const license_sync = tumlab.tumlab.information[7].license_sync;
-const LICENSE = `"Lab_server_license": "${license_sync}"`;
+
+export async function getLicense() {
+  try {
+    const response = await fetch("/info/agent.json");
+    const data = await response.json();
+    const license_sync = data.tumlab.information[7].license_sync;
+    return `"Lab_server_license": "${license_sync}"`;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function getSpecifications() {
+  try {
+    const response = await fetch("/info/specifications.json");
+    const data = await response.json();
+    return data.specifications;
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 const { configurations, slider, header, sectionApps } = textChangeLanguage();
 
@@ -99,7 +118,7 @@ export const menuConfigurations = [
     <div class="license-key">
       <span
       class="activation"
-        >${LICENSE}</span
+        ></span
       >
       <p><span data-section="configurations" data-value="configurations-license-activation">${configurations["configurations-license-activation"]}</span> <strong data-section="configurations" data-value="configurations-license-date">${ACTIVATION_DATE}</strong></p>
     </div>
@@ -272,6 +291,8 @@ export const apps = [
         title: `${sectionApps["app-simulators-spanish-title"]}`,
         description: `${sectionApps["app-simulators-spanish-description"]}`,
         url: "http://tumlab.local:8087/viewer#phet_es_2023-01/A/index.html",
+        ltitle: `${sectionApps["app-simulators-spanish-license-title"]}`,
+        ldescription: `${sectionApps["app-simulators-spanish-license-description"]}`,
       },
       {
         id: "simulators-english",
@@ -281,6 +302,7 @@ export const apps = [
         video: "./assets/simuladores/videos/simulators-english.mov",
         title: `${sectionApps["app-simulators-english-title"]}`,
         description: `${sectionApps["app-simulators-english-description"]}`,
+        ldescription: `${sectionApps["app-simulators-english-license-description"]}`,
         url: "http://tumlab.local:8087/viewer#phet_en_all_2023-04/A/index.html",
       },
     ],
@@ -315,6 +337,8 @@ export const apps = [
         title: `${sectionApps["app-wikipedia-title"]}`,
         description: `${sectionApps["app-wikipedia-description"]}`,
         url: "http://tumlab.local:8087/viewer#wikipedia_es_all_maxi_2023-10/A/Wikipedia:Offline",
+        ltitle: `${sectionApps["app-wikipedia-license-title"]}`,
+        ldescription: `${sectionApps["app-wikipedia-license-description"]}`,
       },
 
       {
@@ -325,6 +349,8 @@ export const apps = [
         bg: "./assets/recursos-educativos/mediacms_bg.webp",
         title: `${sectionApps["app-media-cms-title"]}`,
         description: `${sectionApps["app-media-cms-description"]}`,
+        ltitle: `${sectionApps["app-media-cms-license-title"]}`,
+        ldescription: `${sectionApps["app-media-cms-license-description"]}`,
         url: "http://tumlab.local:8085",
       },
       {
@@ -337,6 +363,8 @@ export const apps = [
           "./assets/recursos-educativos/videos/recursos-educativos-open-street-map.mp4",
         title: `${sectionApps["app-open-street-map-title"]}`,
         description: `${sectionApps["app-open-street-map-description"]}`,
+        ltitle: `${sectionApps["app-open-street-map-license-title"]}`,
+        ldescription: `${sectionApps["app-open-street-map-license-description"]}`,
         url: "http://tumlab.local:8081",
       },
       {
@@ -346,8 +374,9 @@ export const apps = [
         thumbnail: "./assets/recursos-educativos/scratch_thumbnail.webp",
         video:
           "./assets/recursos-educativos/videos/recursos-educativos-scratch.mp4",
-        title: `${sectionApps["app-scratch-title"]}`,
-        description: `${sectionApps["app-scratch-description"]}`,
+		title: `${sectionApps["app-scratch-title"]}`,
+		description: `${sectionApps["app-scratch-description"]}`,
+        ldescription: `${sectionApps["app-scratch-license-description"]}`,
         url: "http://192.168.4.1:8086",
       },
       {
@@ -360,6 +389,8 @@ export const apps = [
         title: `${sectionApps["app-krita-title"]}`,
         description: `${sectionApps["app-krita-description"]}`,
         url: "http://tumlab.local/krita/krita-x64-5.2.2-setup.exe",
+        ltitle: `${sectionApps["app-krita-license-title"]}`,
+        ldescription: `${sectionApps["app-krita-license-description"]}`,
       },
     ],
   },

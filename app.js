@@ -5,11 +5,14 @@ import {
   apps,
   LANGUAGE,
   DEFAULT_LANGUAGE,
+  ACTIVATION_DATE,
+  getLicense,
+  getSpecifications,
 } from "./const.js";
 import { renderSlider } from "./components/slider.js";
 import { textChangeLanguage } from "./locales/index.js";
 
-const { slider, modal } = textChangeLanguage();
+const { slider, modal, configurations } = textChangeLanguage();
 
 const SHOW_INTRO = true;
 
@@ -294,9 +297,12 @@ const renderContent = (categoryName) => {
       <h2 data-section="sectionApps" data-value=${`app-${app.children[index].id}-title`} class="source-title">${
     app.children[index].title
   }</h2>
-      <p data-section="sectionApps" data-value=${`app-${app.children[index].id}-description`} class="source-description">
-      ${app.children[index].description}
-      </p>
+  <p data-section="sectionApps" data-value=${`app-${app.children[index].id}-description`} class="source-description">
+  ${app.children[index].description}
+  </p>
+  <a style=${app.children[index].ldescription ? "display:block;" : "display:none;"} data-section="sectionApps" data-value=${`app-${app.children[index].id}-license-description`} 
+  href="${app.children[index].ldescription}" target="_blank" class="source-link">${app.children[index].ltitle}</a>
+  <br>
       <a href=${
         app.children[index].url
       } target="_blank" rel="noopener noreferrer" title="play" class="link-btn primary-button btn-play">
@@ -342,6 +348,10 @@ const renderContent = (categoryName) => {
       let title = document.querySelector(".source-title");
       title.textContent = selectedChild.title;
 
+      let ldescription = document.querySelector(".source-link");
+      ldescription.textContent = selectedChild.ltitle;
+      ldescription.href = selectedChild.ldescription;
+
       let description = document.querySelector(".source-description");
       description.textContent = selectedChild.description;
 
@@ -356,7 +366,106 @@ const renderContent = (categoryName) => {
   });
 };
 
-const renderConfigMenu = () => {
+const renderConfigMenu = async () => {
+  const licenseIndex = menuConfigurations.findIndex(
+    (item) => item.id === "license"
+  );
+
+  const specificationsIndex = menuConfigurations.findIndex(
+    (item) => item.id === "specifications"
+  );
+
+  const specifications = await getSpecifications();
+
+  const excludeItems = [
+    "operating-system",
+    "interface-version",
+    "battery-type",
+    "battery-duration",
+  ];
+
+  if (specificationsIndex !== -1) {
+    const specificationsListItems = Object.entries(specifications)
+      .filter(([key]) => !excludeItems.includes(key))
+      .map(([_, text]) => {
+        if (text.show) {
+          return `<li>${text.value}</li>`;
+        }
+      })
+      .join("");
+
+    const content = `<h2 data-section="configurations" data-value="configurations-specifications-title">${
+      configurations["configurations-specifications-title"]
+    }</h2>
+
+     ${
+       specifications["operating-system"].show
+         ? `<h5 data-section="configurations" data-value="configurations-operating-system">${configurations["configurations-operating-system"]}</h5>
+    
+      
+       <ul class="config-mini-list">  
+        <li>
+            <span
+              data-section="configurations"
+              data-value="configurations-version"
+            >
+              ${configurations["configurations-version"]}
+            </span>
+            <strong> ${specifications["operating-system"].value}</strong>
+          </li>
+     </ul>`
+         : ""
+     }
+     
+     ${
+       specifications["interface-version"].show
+         ? `<h5 data-section="configurations" data-value="configurations-interface-version">${configurations["configurations-interface-version"]}</h5>
+     <ul class="config-mini-list">
+       <li><span data-section="configurations" data-value="configurations-interface-version-number">${configurations["configurations-interface-version-number"]}</span> ${specifications["interface-version"].value}</li>
+     </ul>
+     `
+         : ""
+     }
+     <h5>Hardware</h5>
+     <ul class="config-mini-list">
+     ${specificationsListItems}
+     </ul>
+     
+     <h5 data-section="configurations" data-value="configurations-battery">${
+       configurations["configurations-battery"]
+     }</h5>
+  <ul class="config-mini-list">
+    <li>${specifications["battery-type"].value}</li>
+    <li>${specifications["battery-duration"].value}</li>
+  </ul>
+  <p data-section="configurations" data-value="configurations-battery-description">${
+    configurations["configurations-battery-description"]
+  }</p>`;
+
+    menuConfigurations[specificationsIndex].content = `
+    <div class="config-list-item">
+      ${content} 
+    </div>
+    `;
+  }
+
+  const license = await getLicense();
+
+  if (licenseIndex !== -1) {
+    menuConfigurations[licenseIndex].content = `<div class="config-list-item">
+    <h2 data-section="configurations" data-value="configurations-list-license">${configurations["configurations-list-license"]}</h2>
+    <p data-section="configurations" data-value="configurations-license-description">${configurations["configurations-license-description"]}</p>
+
+    <div class="license-key">
+      <span
+      class="activation"
+        >${license}</span
+      >
+      <p><span data-section="configurations" data-value="configurations-license-activation">${configurations["configurations-license-activation"]}</span> <strong data-section="configurations" data-value="configurations-license-date">${ACTIVATION_DATE}</strong></p>
+    </div>
+  </div>`;
+  }
+
   const menuConfigTab = generateList({
     arrayList: menuConfigurations,
     section: "configurations",
@@ -415,11 +524,11 @@ function initIntroAndSlider() {
   renderSlider(infoSlider);
 }
 
-function initHeaderAndFooter() {
+async function initHeaderAndFooter() {
   header.style.display = "flex";
   footer.style.display = "flex";
   renderContent(visibleCategory[0].name);
-  renderConfigMenu();
+  await renderConfigMenu();
   setUpLanguageSelection();
 }
 
@@ -446,12 +555,12 @@ function addChangeListener(radio) {
   });
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   if (SHOW_INTRO) {
     setTimeout(initIntroAndSlider, 5500);
-    setTimeout(initHeaderAndFooter, 5600);
+    setTimeout(await initHeaderAndFooter, 5600);
   } else {
     intro.remove();
-    initHeaderAndFooter();
+    await initHeaderAndFooter();
   }
 });
